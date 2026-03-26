@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-26T20:13:23.005Z",
+  "updatedAt": "2026-03-26T20:15:40.821Z",
   "createdAt": "2026-03-24T20:50:50.019Z",
   "id": "bhWqdvOJPFtWzBiJ",
   "name": "n8n Github Sync",
@@ -109,10 +109,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "version": 3,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "loose"
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
           },
           "conditions": [
             {
@@ -159,8 +159,7 @@
         },
         "filePath": "={{ $('Set Variables').item.json.filePath }}",
         "fileContent": "={{ $('Set Variables').item.json.fileContent }}",
-        "commitMessage": "={{ 'backup: ' + $('Set Variables').item.json.name }}",
-        "sha": "={{ $json.sha }}"
+        "commitMessage": "={{ 'backup: ' + $('Set Variables').item.json.name }}"
       },
       "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "name": "GitHub Edit File",
@@ -237,6 +236,12 @@
       ]
     },
     {
+      "parameters": {
+        "url": "={{ 'https://api.github.com/repos/ssd-007/n8n-github-sync/contents/' + $json.filePath }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "options": {}
+      },
       "id": "e9f1a2b3-c4d5-6789-abcd-ef0123456789",
       "name": "Get File SHA",
       "type": "n8n-nodes-base.httpRequest",
@@ -245,13 +250,6 @@
         896,
         -128
       ],
-      "parameters": {
-        "method": "GET",
-        "url": "={{ 'https://api.github.com/repos/ssd-007/n8n-github-sync/contents/' + $json.filePath }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "githubApi",
-        "options": {}
-      },
       "credentials": {
         "githubApi": {
           "id": "aBvdYtLSAq2UoDhc",
@@ -358,7 +356,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "d46ba056-7fcd-4087-8a44-836a4a727cbc",
+  "versionId": "345ee37f-02a2-4bd9-8102-e56519ef5674",
   "activeVersionId": null,
   "triggerCount": 0,
   "shared": [
