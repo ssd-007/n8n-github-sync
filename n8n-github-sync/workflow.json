@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-25T00:19:53.293Z",
+  "updatedAt": "2026-03-26T20:13:23.005Z",
   "createdAt": "2026-03-24T20:50:50.019Z",
   "id": "bhWqdvOJPFtWzBiJ",
   "name": "n8n Github Sync",
@@ -34,7 +34,7 @@
       "typeVersion": 2.3,
       "position": [
         448,
-        -16
+        -128
       ],
       "id": "fee00244-ecf1-49b2-8e04-bd346ddb444f",
       "name": "Filter"
@@ -45,7 +45,7 @@
       "typeVersion": 1,
       "position": [
         0,
-        -16
+        -32
       ],
       "id": "18f78048-9fc4-49b1-b252-35659117227c",
       "name": "When clicking ‘Execute workflow’"
@@ -59,7 +59,7 @@
       "typeVersion": 1,
       "position": [
         224,
-        -16
+        -128
       ],
       "id": "2a5b9383-8aa3-4b30-914e-91a9fa92a65e",
       "name": "n8n Workflows",
@@ -99,49 +99,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        656,
-        -16
+        672,
+        -128
       ],
       "id": "fb8c4cdc-2f6e-4e1f-a4c6-51f8243add51",
       "name": "Set Variables"
-    },
-    {
-      "parameters": {
-        "resource": "file",
-        "operation": "get",
-        "owner": {
-          "__rl": true,
-          "value": "ssd-007",
-          "mode": "list",
-          "cachedResultName": "ssd-007",
-          "cachedResultUrl": "https://github.com/ssd-007"
-        },
-        "repository": {
-          "__rl": true,
-          "value": "n8n-github-sync",
-          "mode": "list",
-          "cachedResultName": "n8n-github-sync",
-          "cachedResultUrl": "https://github.com/ssd-007/n8n-github-sync"
-        },
-        "filePath": "={{ $('Set Variables').item.json.filePath }}",
-        "additionalParameters": {}
-      },
-      "type": "n8n-nodes-base.github",
-      "typeVersion": 1.1,
-      "position": [
-        864,
-        -16
-      ],
-      "id": "d657ab4d-fe31-465a-88a5-fa058213aac4",
-      "name": "Get a file",
-      "webhookId": "fa807dd8-1425-4028-a3a5-05a5adec37d5",
-      "credentials": {
-        "githubApi": {
-          "id": "aBvdYtLSAq2UoDhc",
-          "name": "GitHub account"
-        }
-      },
-      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -150,16 +112,16 @@
             "version": 3,
             "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "strict"
+            "typeValidation": "loose"
           },
           "conditions": [
             {
               "id": "dd630bc2-116a-4563-95df-2fa114fb55f1",
-              "leftValue": "={{ $json.sha }}",
+              "leftValue": "={{ !!$json.sha }}",
               "rightValue": "",
               "operator": {
-                "type": "string",
-                "operation": "isNotEmpty",
+                "type": "boolean",
+                "operation": "true",
                 "singleValue": true
               }
             }
@@ -171,8 +133,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        1072,
-        -16
+        1120,
+        -128
       ],
       "id": "8f38c8b7-3769-4c8a-9e54-71842e29a2ff",
       "name": "If"
@@ -197,15 +159,16 @@
         },
         "filePath": "={{ $('Set Variables').item.json.filePath }}",
         "fileContent": "={{ $('Set Variables').item.json.fileContent }}",
-        "commitMessage": "={{ 'backup: ' + $('Set Variables').item.json.name }}"
+        "commitMessage": "={{ 'backup: ' + $('Set Variables').item.json.name }}",
+        "sha": "={{ $json.sha }}"
       },
       "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "name": "GitHub Edit File",
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        1280,
-        -144
+        1344,
+        -224
       ],
       "webhookId": "65c525be-810e-4d19-99c6-8c586385adf6",
       "credentials": {
@@ -242,8 +205,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        1280,
-        128
+        1344,
+        -32
       ],
       "webhookId": "6731c82e-0bfa-4ce0-a228-f97ad1c1fe0d",
       "credentials": {
@@ -259,8 +222,7 @@
         "rule": {
           "interval": [
             {
-              "field": "cronExpression",
-              "expression": "0 2 * * *"
+              "triggerAtHour": 4
             }
           ]
         }
@@ -273,6 +235,30 @@
         0,
         -224
       ]
+    },
+    {
+      "id": "e9f1a2b3-c4d5-6789-abcd-ef0123456789",
+      "name": "Get File SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        -128
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://api.github.com/repos/ssd-007/n8n-github-sync/contents/' + $json.filePath }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "options": {}
+      },
+      "credentials": {
+        "githubApi": {
+          "id": "aBvdYtLSAq2UoDhc",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueRegularOutput"
     }
   ],
   "connections": {
@@ -309,28 +295,6 @@
         ]
       ]
     },
-    "Set Variables": {
-      "main": [
-        [
-          {
-            "node": "Get a file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get a file": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If": {
       "main": [
         [
@@ -359,6 +323,28 @@
           }
         ]
       ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Get File SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get File SHA": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -372,7 +358,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "88d096ad-b6ac-4190-9683-d1f9fd543ddc",
+  "versionId": "d46ba056-7fcd-4087-8a44-836a4a727cbc",
   "activeVersionId": null,
   "triggerCount": 0,
   "shared": [
