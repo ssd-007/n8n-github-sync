@@ -2,6 +2,9 @@
 
 Backs up all active n8n workflows to this repository daily.
 
+<img width="1798" height="606" alt="image" src="https://github.com/user-attachments/assets/ac6319a8-9fa8-45f6-bb64-b5d74a451233" />
+
+
 ---
 
 ## What It Does
@@ -61,6 +64,8 @@ All credentials are stored in the n8n credential store — no keys are in the wo
 
 ---
 
-## Why This Was Built
+## Problem This Solves
 
-Portfolio piece demonstrating scheduled triggers, API integration, conditional branching, and notification delivery. The repo is public and serves as a live example of automated workflow version control.
+n8n's GitHub sync feature is only available on paid cloud plans. Self-hosted instances — including the free Community Edition — have no built-in version control for workflows. This workflow fills that gap: automated daily backups to GitHub with no manual intervention required.
+
+
