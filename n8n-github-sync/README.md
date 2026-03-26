@@ -2,7 +2,8 @@
 
 Backs up all active n8n workflows to this repository daily.
 
-<img width="1798" height="606" alt="image" src="https://github.com/user-attachments/assets/ac6319a8-9fa8-45f6-bb64-b5d74a451233" />
+<img width="1810" height="587" alt="image" src="https://github.com/user-attachments/assets/8d2af5ca-6482-4fb2-bdec-61970707c2dc" />
+
 
 
 ---
@@ -10,6 +11,9 @@ Backs up all active n8n workflows to this repository daily.
 ## What It Does
 
 Every day at 4am, this workflow fetches all active workflows from the n8n instance and saves each one as `workflow.json` in its own folder. If the file already exists it updates it; if not, it creates it. A Telegram message summarises the run at the end.
+
+<img width="448" height="238" alt="image" src="https://github.com/user-attachments/assets/12f28842-449c-4058-8699-a5ca4a4e9aae" />
+
 
 ---
 
