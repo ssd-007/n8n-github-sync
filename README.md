@@ -9,29 +9,15 @@ This repository is a self-maintaining backup of production n8n automation workfl
 A dedicated n8n workflow (`n8n-github-sync`) handles all synchronization. It runs at 4:00 AM daily and performs the following operations:
 
 1. **Fetch** — Queries the n8n REST API to retrieve all active workflows from the live instance.
-2. **Check** — For each workflow, calls the GitHub Contents API to determine if a corresponding JSON file already exists in the repository, comparing SHA hashes to detect changes.
-3. **Create or Update** — If a file doesn't exist, it is created. If a file exists but the SHA differs (i.e., the workflow has changed), the file is updated. Unchanged files are skipped.
-4. **Notify** — After all workflows are processed, a single Telegram message is sent summarizing what was created and what was updated in the run.
-
-This approach is idempotent — running the workflow multiple times will not produce duplicate commits or false updates.
+2. **Check** — For each workflow, calls the GitHub Contents API to determine whether a corresponding JSON file already exists in the repository.
+3. **Create or Update** — If a file doesn't exist, it is created. If it already exists, it is updated with the latest version from the live instance.
+4. **Notify** — After all workflows are processed, a single Telegram message is sent summarising what was created and what was updated in the run.
 
 ---
 
 ## Workflows in This Repository
 
 This repository is powered by `n8n-github-sync`, the workflow responsible for all automated commits to this repo. Additional workflows are added as they reach production quality.
-
----
-
-## Tech Stack
-
-| Component | Role |
-|-----------|------|
-| **n8n** (self-hosted) | Automation platform running all workflows |
-| **n8n REST API** | Source of truth for fetching live workflow definitions |
-| **GitHub Contents API** | File creation and updates with SHA-based conflict detection |
-| **Telegram Bot API** | Post-run summary notifications |
-| **JavaScript** (n8n Code node) | Builds the notification payload from processed workflow data |
 
 ---
 
