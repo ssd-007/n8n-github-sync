@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-03-26T20:15:40.821Z",
+  "updatedAt": "2026-03-26T20:36:50.676Z",
   "createdAt": "2026-03-24T20:50:50.019Z",
   "id": "bhWqdvOJPFtWzBiJ",
   "name": "n8n Github Sync",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -52,7 +52,9 @@
     },
     {
       "parameters": {
-        "filters": {},
+        "filters": {
+          "activeWorkflows": true
+        },
         "requestOptions": {}
       },
       "type": "n8n-nodes-base.n8n",
@@ -351,14 +353,18 @@
     "availableInMCP": false,
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "345ee37f-02a2-4bd9-8102-e56519ef5674",
-  "activeVersionId": null,
-  "triggerCount": 0,
+  "versionId": "f839d0d6-3ca2-46ee-964c-723f76f4d368",
+  "activeVersionId": "f839d0d6-3ca2-46ee-964c-723f76f4d368",
+  "triggerCount": 1,
   "shared": [
     {
       "updatedAt": "2026-03-24T20:50:50.022Z",
@@ -368,6 +374,357 @@
       "projectId": "sFBQoJMMGGHKfOGS"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2026-03-26T20:37:13.000Z",
+    "createdAt": "2026-03-26T20:36:50.677Z",
+    "versionId": "f839d0d6-3ca2-46ee-964c-723f76f4d368",
+    "workflowId": "bhWqdvOJPFtWzBiJ",
+    "nodes": [
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "9ef571de-abb0-4f7e-b35b-b8ec8b17cfcf",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": "Reconciliation",
+                "operator": {
+                  "type": "string",
+                  "operation": "notContains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.3,
+        "position": [
+          448,
+          -128
+        ],
+        "id": "fee00244-ecf1-49b2-8e04-bd346ddb444f",
+        "name": "Filter"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          -32
+        ],
+        "id": "18f78048-9fc4-49b1-b252-35659117227c",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "filters": {
+            "activeWorkflows": true
+          },
+          "requestOptions": {}
+        },
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          224,
+          -128
+        ],
+        "id": "2a5b9383-8aa3-4b30-914e-91a9fa92a65e",
+        "name": "n8n Workflows",
+        "credentials": {
+          "n8nApi": {
+            "id": "OxDWNqPilqexXBWL",
+            "name": "n8n account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "643dd240-e914-4111-be73-0fb8bd7d7e7f",
+                "name": "name",
+                "value": "={{ $json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "63b5bb9b-7ded-43e6-8d72-115fdc129709",
+                "name": "filePath",
+                "value": "={{ $json.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') }}/workflow.json",
+                "type": "string"
+              },
+              {
+                "id": "98140180-339e-4d45-9927-477e043834cb",
+                "name": "fileContent",
+                "value": "={{ JSON.stringify($json, null, 2) }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          672,
+          -128
+        ],
+        "id": "fb8c4cdc-2f6e-4e1f-a4c6-51f8243add51",
+        "name": "Set Variables"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "dd630bc2-116a-4563-95df-2fa114fb55f1",
+                "leftValue": "={{ !!$json.sha }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1120,
+          -128
+        ],
+        "id": "8f38c8b7-3769-4c8a-9e54-71842e29a2ff",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "ssd-007",
+            "mode": "list",
+            "cachedResultName": "ssd-007",
+            "cachedResultUrl": "https://github.com/ssd-007"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-github-sync",
+            "mode": "list",
+            "cachedResultName": "n8n-github-sync",
+            "cachedResultUrl": "https://github.com/ssd-007/n8n-github-sync"
+          },
+          "filePath": "={{ $('Set Variables').item.json.filePath }}",
+          "fileContent": "={{ $('Set Variables').item.json.fileContent }}",
+          "commitMessage": "={{ 'backup: ' + $('Set Variables').item.json.name }}"
+        },
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "name": "GitHub Edit File",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1344,
+          -224
+        ],
+        "webhookId": "65c525be-810e-4d19-99c6-8c586385adf6",
+        "credentials": {
+          "githubApi": {
+            "id": "aBvdYtLSAq2UoDhc",
+            "name": "GitHub account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "ssd-007",
+            "mode": "list",
+            "cachedResultName": "ssd-007",
+            "cachedResultUrl": "https://github.com/ssd-007"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-github-sync",
+            "mode": "list",
+            "cachedResultName": "n8n-github-sync",
+            "cachedResultUrl": "https://github.com/ssd-007/n8n-github-sync"
+          },
+          "filePath": "={{ $('Set Variables').item.json.filePath }}",
+          "fileContent": "={{ $('Set Variables').item.json.fileContent }}",
+          "commitMessage": "={{ 'backup: ' + $('Set Variables').item.json.name }}"
+        },
+        "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "name": "GitHub Create File",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1344,
+          -32
+        ],
+        "webhookId": "6731c82e-0bfa-4ce0-a228-f97ad1c1fe0d",
+        "credentials": {
+          "githubApi": {
+            "id": "aBvdYtLSAq2UoDhc",
+            "name": "GitHub account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 4
+              }
+            ]
+          }
+        },
+        "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          0,
+          -224
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ 'https://api.github.com/repos/ssd-007/n8n-github-sync/contents/' + $json.filePath }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "githubApi",
+          "options": {}
+        },
+        "id": "e9f1a2b3-c4d5-6789-abcd-ef0123456789",
+        "name": "Get File SHA",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          896,
+          -128
+        ],
+        "credentials": {
+          "githubApi": {
+            "id": "aBvdYtLSAq2UoDhc",
+            "name": "GitHub account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "n8n Workflows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "n8n Workflows": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Set Variables",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "GitHub Edit File",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "GitHub Create File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "n8n Workflows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Variables": {
+        "main": [
+          [
+            {
+              "node": "Get File SHA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get File SHA": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Sidrit info@paracras.com",
+    "name": "Version 1.0",
+    "description": "",
+    "autosaved": true
+  },
   "tags": []
 }
