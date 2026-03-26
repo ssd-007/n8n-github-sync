@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-26T20:51:46.602Z",
+  "updatedAt": "2026-03-26T21:10:03.222Z",
   "createdAt": "2026-03-24T20:50:50.019Z",
   "id": "bhWqdvOJPFtWzBiJ",
   "name": "n8n Github Sync",
@@ -220,25 +220,6 @@
     },
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "triggerAtHour": 4
-            }
-          ]
-        }
-      },
-      "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
-      "name": "Schedule Trigger",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
-      "position": [
-        0,
-        -224
-      ]
-    },
-    {
-      "parameters": {
         "url": "={{ 'https://api.github.com/repos/ssd-007/n8n-github-sync/contents/' + $json.filePath }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "githubApi",
@@ -261,14 +242,6 @@
       "onError": "continueRegularOutput"
     },
     {
-      "id": "f1a2b3c4-d5e6-7890-abcd-111111111111",
-      "name": "Set Status Updated",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1568,
-        -224
-      ],
       "parameters": {
         "assignments": {
           "assignments": [
@@ -287,17 +260,17 @@
           ]
         },
         "options": {}
-      }
-    },
-    {
-      "id": "f2a2b3c4-d5e6-7890-abcd-222222222222",
-      "name": "Set Status Created",
+      },
+      "id": "f1a2b3c4-d5e6-7890-abcd-111111111111",
+      "name": "Set Status Updated",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
         1568,
-        -32
-      ],
+        -224
+      ]
+    },
+    {
       "parameters": {
         "assignments": {
           "assignments": [
@@ -316,9 +289,18 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "f2a2b3c4-d5e6-7890-abcd-222222222222",
+      "name": "Set Status Created",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        -32
+      ]
     },
     {
+      "parameters": {},
       "id": "f3a2b3c4-d5e6-7890-abcd-333333333333",
       "name": "Merge",
       "type": "n8n-nodes-base.merge",
@@ -326,12 +308,12 @@
       "position": [
         1792,
         -128
-      ],
-      "parameters": {
-        "mode": "append"
-      }
+      ]
     },
     {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst updated = items.filter(i => i.json.status === 'updated');\nconst created = items.filter(i => i.json.status === 'created');\n\nlet msg = `📦 *Daily backup complete*\\n`;\nmsg += `_${$now.toFormat('yyyy-MM-dd')}_\\n`;\nif (updated.length) {\n  msg += `\\n✅ *Updated (${updated.length}):*\\n`;\n  msg += updated.map(i => `  • ${i.json.workflowName}`).join('\\n');\n}\nif (created.length) {\n  msg += `\\n🆕 *Created (${created.length}):*\\n`;\n  msg += created.map(i => `  • ${i.json.workflowName}`).join('\\n');\n}\nmsg += `\\n\\n_${items.length} workflows synced_`;\nreturn [{ json: { message: msg } }];"
+      },
       "id": "f4a2b3c4-d5e6-7890-abcd-444444444444",
       "name": "Summarise",
       "type": "n8n-nodes-base.code",
@@ -339,13 +321,16 @@
       "position": [
         2016,
         -128
-      ],
-      "parameters": {
-        "mode": "runOnceForAllItems",
-        "jsCode": "const items = $input.all();\nconst updated = items.filter(i => i.json.status === 'updated');\nconst created = items.filter(i => i.json.status === 'created');\n\nlet msg = `📦 *Daily backup complete*\\n`;\nmsg += `_${$now.toFormat('yyyy-MM-dd')}_\\n`;\nif (updated.length) {\n  msg += `\\n✅ *Updated (${updated.length}):*\\n`;\n  msg += updated.map(i => `  • ${i.json.workflowName}`).join('\\n');\n}\nif (created.length) {\n  msg += `\\n🆕 *Created (${created.length}):*\\n`;\n  msg += created.map(i => `  • ${i.json.workflowName}`).join('\\n');\n}\nmsg += `\\n\\n_${items.length} workflows synced_`;\nreturn [{ json: { message: msg } }];"
-      }
+      ]
     },
     {
+      "parameters": {
+        "chatId": "8382569331",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
       "id": "f5a2b3c4-d5e6-7890-abcd-555555555555",
       "name": "Telegram",
       "type": "n8n-nodes-base.telegram",
@@ -354,19 +339,126 @@
         2240,
         -128
       ],
-      "parameters": {
-        "chatId": "8382569331",
-        "text": "={{ $json.message }}",
-        "additionalFields": {
-          "parse_mode": "Markdown"
-        }
-      },
+      "webhookId": "2d8022c0-96ed-46bf-8468-611ab4ad02d6",
       "credentials": {
         "telegramApi": {
           "id": "aPen8TMX61j9GoRN",
           "name": "Telegram n8n Bot"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "## 📥 Fetch & Prepare Workflows\nGet all active n8n workflows, filter out excluded ones, and prepare the name, repo path, and JSON content needed for backup.",
+        "height": 360,
+        "width": 644,
+        "color": "#814003"
+      },
+      "id": "s1000000-0000-0000-0000-000000000001",
+      "name": "Note: Fetch & Prepare",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🔍 Check File Exists in GitHub\nFetch the file's current SHA from GitHub. If SHA is present the file exists and we update — otherwise we create it fresh.",
+        "height": 360,
+        "width": 436,
+        "color": "#420354"
+      },
+      "id": "s2000000-0000-0000-0000-000000000002",
+      "name": "Note: Check File Exists",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        832,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ✏️ Update Existing File\nPush the latest workflow JSON to the existing GitHub file using its SHA, then tag the result as updated.",
+        "height": 328,
+        "width": 420,
+        "color": 3
+      },
+      "id": "s3000000-0000-0000-0000-000000000003",
+      "name": "Note: Update File",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## 🆕 Create New File\nPush the workflow JSON as a brand new file in the GitHub repo, then tag the result as created.",
+        "height": 328,
+        "width": 420,
+        "color": 5
+      },
+      "id": "s4000000-0000-0000-0000-000000000004",
+      "name": "Note: Create File",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📤 Summarise & Notify\nMerge results from both branches, build a summary of what was updated and created, then send a single Telegram notification.",
+        "height": 344,
+        "width": 708
+      },
+      "id": "s5000000-0000-0000-0000-000000000005",
+      "name": "Note: Summarise & Notify",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ⏰ Triggers\n**Schedule:** Runs automatically every day at 4:00 AM to back up all active workflows.\n\n**Manual:** Run on demand whenever an immediate backup is needed.",
+        "height": 576,
+        "color": "#078309"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -432
+      ],
+      "id": "0467b649-f3af-4510-ad90-9072eda38fb3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 4
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        -224
+      ],
+      "id": "1f13e864-bcc0-4a3d-8e5c-47ca4e461464",
+      "name": "Schedule Trigger"
     }
   ],
   "connections": {
@@ -415,17 +507,6 @@
         [
           {
             "node": "GitHub Create File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "n8n Workflows",
             "type": "main",
             "index": 0
           }
@@ -519,6 +600,17 @@
           }
         ]
       ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "n8n Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -536,8 +628,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "2b051645-2103-4b0f-bd9b-d0def69d1677",
-  "activeVersionId": "2b051645-2103-4b0f-bd9b-d0def69d1677",
+  "versionId": "c8a278c0-d340-4997-b244-9620e7974a74",
+  "activeVersionId": "c8a278c0-d340-4997-b244-9620e7974a74",
   "triggerCount": 1,
   "shared": [
     {
@@ -549,9 +641,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-03-26T20:51:46.603Z",
-    "createdAt": "2026-03-26T20:51:46.603Z",
-    "versionId": "2b051645-2103-4b0f-bd9b-d0def69d1677",
+    "updatedAt": "2026-03-26T21:10:19.000Z",
+    "createdAt": "2026-03-26T21:10:03.223Z",
+    "versionId": "c8a278c0-d340-4997-b244-9620e7974a74",
     "workflowId": "bhWqdvOJPFtWzBiJ",
     "nodes": [
       {
@@ -768,25 +860,6 @@
       },
       {
         "parameters": {
-          "rule": {
-            "interval": [
-              {
-                "triggerAtHour": 4
-              }
-            ]
-          }
-        },
-        "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
-        "name": "Schedule Trigger",
-        "type": "n8n-nodes-base.scheduleTrigger",
-        "typeVersion": 1.3,
-        "position": [
-          0,
-          -224
-        ]
-      },
-      {
-        "parameters": {
           "url": "={{ 'https://api.github.com/repos/ssd-007/n8n-github-sync/contents/' + $json.filePath }}",
           "authentication": "predefinedCredentialType",
           "nodeCredentialType": "githubApi",
@@ -809,14 +882,6 @@
         "onError": "continueRegularOutput"
       },
       {
-        "id": "f1a2b3c4-d5e6-7890-abcd-111111111111",
-        "name": "Set Status Updated",
-        "type": "n8n-nodes-base.set",
-        "typeVersion": 3.4,
-        "position": [
-          1568,
-          -224
-        ],
         "parameters": {
           "assignments": {
             "assignments": [
@@ -835,17 +900,17 @@
             ]
           },
           "options": {}
-        }
-      },
-      {
-        "id": "f2a2b3c4-d5e6-7890-abcd-222222222222",
-        "name": "Set Status Created",
+        },
+        "id": "f1a2b3c4-d5e6-7890-abcd-111111111111",
+        "name": "Set Status Updated",
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
           1568,
-          -32
-        ],
+          -224
+        ]
+      },
+      {
         "parameters": {
           "assignments": {
             "assignments": [
@@ -864,9 +929,18 @@
             ]
           },
           "options": {}
-        }
+        },
+        "id": "f2a2b3c4-d5e6-7890-abcd-222222222222",
+        "name": "Set Status Created",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1568,
+          -32
+        ]
       },
       {
+        "parameters": {},
         "id": "f3a2b3c4-d5e6-7890-abcd-333333333333",
         "name": "Merge",
         "type": "n8n-nodes-base.merge",
@@ -874,12 +948,12 @@
         "position": [
           1792,
           -128
-        ],
-        "parameters": {
-          "mode": "append"
-        }
+        ]
       },
       {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nconst updated = items.filter(i => i.json.status === 'updated');\nconst created = items.filter(i => i.json.status === 'created');\n\nlet msg = `📦 *Daily backup complete*\\n`;\nmsg += `_${$now.toFormat('yyyy-MM-dd')}_\\n`;\nif (updated.length) {\n  msg += `\\n✅ *Updated (${updated.length}):*\\n`;\n  msg += updated.map(i => `  • ${i.json.workflowName}`).join('\\n');\n}\nif (created.length) {\n  msg += `\\n🆕 *Created (${created.length}):*\\n`;\n  msg += created.map(i => `  • ${i.json.workflowName}`).join('\\n');\n}\nmsg += `\\n\\n_${items.length} workflows synced_`;\nreturn [{ json: { message: msg } }];"
+        },
         "id": "f4a2b3c4-d5e6-7890-abcd-444444444444",
         "name": "Summarise",
         "type": "n8n-nodes-base.code",
@@ -887,13 +961,16 @@
         "position": [
           2016,
           -128
-        ],
-        "parameters": {
-          "mode": "runOnceForAllItems",
-          "jsCode": "const items = $input.all();\nconst updated = items.filter(i => i.json.status === 'updated');\nconst created = items.filter(i => i.json.status === 'created');\n\nlet msg = `📦 *Daily backup complete*\\n`;\nmsg += `_${$now.toFormat('yyyy-MM-dd')}_\\n`;\nif (updated.length) {\n  msg += `\\n✅ *Updated (${updated.length}):*\\n`;\n  msg += updated.map(i => `  • ${i.json.workflowName}`).join('\\n');\n}\nif (created.length) {\n  msg += `\\n🆕 *Created (${created.length}):*\\n`;\n  msg += created.map(i => `  • ${i.json.workflowName}`).join('\\n');\n}\nmsg += `\\n\\n_${items.length} workflows synced_`;\nreturn [{ json: { message: msg } }];"
-        }
+        ]
       },
       {
+        "parameters": {
+          "chatId": "8382569331",
+          "text": "={{ $json.message }}",
+          "additionalFields": {
+            "parse_mode": "Markdown"
+          }
+        },
         "id": "f5a2b3c4-d5e6-7890-abcd-555555555555",
         "name": "Telegram",
         "type": "n8n-nodes-base.telegram",
@@ -902,19 +979,126 @@
           2240,
           -128
         ],
-        "parameters": {
-          "chatId": "8382569331",
-          "text": "={{ $json.message }}",
-          "additionalFields": {
-            "parse_mode": "Markdown"
-          }
-        },
+        "webhookId": "2d8022c0-96ed-46bf-8468-611ab4ad02d6",
         "credentials": {
           "telegramApi": {
             "id": "aPen8TMX61j9GoRN",
             "name": "Telegram n8n Bot"
           }
         }
+      },
+      {
+        "parameters": {
+          "content": "## 📥 Fetch & Prepare Workflows\nGet all active n8n workflows, filter out excluded ones, and prepare the name, repo path, and JSON content needed for backup.",
+          "height": 360,
+          "width": 644,
+          "color": "#814003"
+        },
+        "id": "s1000000-0000-0000-0000-000000000001",
+        "name": "Note: Fetch & Prepare",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          176,
+          -288
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## 🔍 Check File Exists in GitHub\nFetch the file's current SHA from GitHub. If SHA is present the file exists and we update — otherwise we create it fresh.",
+          "height": 360,
+          "width": 436,
+          "color": "#420354"
+        },
+        "id": "s2000000-0000-0000-0000-000000000002",
+        "name": "Note: Check File Exists",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          832,
+          -288
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## ✏️ Update Existing File\nPush the latest workflow JSON to the existing GitHub file using its SHA, then tag the result as updated.",
+          "height": 328,
+          "width": 420,
+          "color": 3
+        },
+        "id": "s3000000-0000-0000-0000-000000000003",
+        "name": "Note: Update File",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1280,
+          -400
+        ]
+      },
+      {
+        "parameters": {
+          "content": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## 🆕 Create New File\nPush the workflow JSON as a brand new file in the GitHub repo, then tag the result as created.",
+          "height": 328,
+          "width": 420,
+          "color": 5
+        },
+        "id": "s4000000-0000-0000-0000-000000000004",
+        "name": "Note: Create File",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1280,
+          -64
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## 📤 Summarise & Notify\nMerge results from both branches, build a summary of what was updated and created, then send a single Telegram notification.",
+          "height": 344,
+          "width": 708
+        },
+        "id": "s5000000-0000-0000-0000-000000000005",
+        "name": "Note: Summarise & Notify",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1712,
+          -256
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## ⏰ Triggers\n**Schedule:** Runs automatically every day at 4:00 AM to back up all active workflows.\n\n**Manual:** Run on demand whenever an immediate backup is needed.",
+          "height": 576,
+          "color": "#078309"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -80,
+          -432
+        ],
+        "id": "0467b649-f3af-4510-ad90-9072eda38fb3",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 4
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          0,
+          -224
+        ],
+        "id": "1f13e864-bcc0-4a3d-8e5c-47ca4e461464",
+        "name": "Schedule Trigger"
       }
     ],
     "connections": {
@@ -963,17 +1147,6 @@
           [
             {
               "node": "GitHub Create File",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Schedule Trigger": {
-        "main": [
-          [
-            {
-              "node": "n8n Workflows",
               "type": "main",
               "index": 0
             }
@@ -1067,12 +1240,23 @@
             }
           ]
         ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "n8n Workflows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Sidrit info@paracras.com",
-    "name": null,
-    "description": null,
-    "autosaved": false
+    "name": "Version 1",
+    "description": "",
+    "autosaved": true
   },
   "tags": []
 }
