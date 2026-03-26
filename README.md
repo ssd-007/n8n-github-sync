@@ -19,11 +19,7 @@ This approach is idempotent — running the workflow multiple times will not pro
 
 ## Workflows in This Repository
 
-| File | Description |
-|------|-------------|
-| `n8n-github-sync.json` | The sync workflow itself. Fetches all active workflows from the n8n instance and pushes changes to this repository daily. |
-
-> Additional workflows will be added as they reach production quality.
+This repository is powered by `n8n-github-sync`, the workflow responsible for all automated commits to this repo. Additional workflows are added as they reach production quality.
 
 ---
 
@@ -36,17 +32,6 @@ This approach is idempotent — running the workflow multiple times will not pro
 | **GitHub Contents API** | File creation and updates with SHA-based conflict detection |
 | **Telegram Bot API** | Post-run summary notifications |
 | **JavaScript** (n8n Code node) | Builds the notification payload from processed workflow data |
-
----
-
-## Repository Structure
-```
-/
-├── n8n-github-sync.json   # GitHub sync workflow
-└── README.md
-```
-
-Each workflow is exported as a raw JSON file using n8n's native export format and can be imported directly into any n8n instance.
 
 ---
 
