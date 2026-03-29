@@ -1,44 +1,11 @@
 {
-  "updatedAt": "2026-03-26T21:10:03.222Z",
+  "updatedAt": "2026-03-29T18:39:51.647Z",
   "createdAt": "2026-03-24T20:50:50.019Z",
   "id": "bhWqdvOJPFtWzBiJ",
   "name": "n8n Github Sync",
   "active": true,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "9ef571de-abb0-4f7e-b35b-b8ec8b17cfcf",
-              "leftValue": "={{ $json.name }}",
-              "rightValue": "Reconciliation",
-              "operator": {
-                "type": "string",
-                "operation": "notContains"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.filter",
-      "typeVersion": 2.3,
-      "position": [
-        448,
-        -128
-      ],
-      "id": "fee00244-ecf1-49b2-8e04-bd346ddb444f",
-      "name": "Filter"
-    },
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
@@ -101,7 +68,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        672,
+        448,
         -128
       ],
       "id": "fb8c4cdc-2f6e-4e1f-a4c6-51f8243add51",
@@ -135,7 +102,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        1120,
+        896,
         -128
       ],
       "id": "8f38c8b7-3769-4c8a-9e54-71842e29a2ff",
@@ -154,10 +121,10 @@
         },
         "repository": {
           "__rl": true,
-          "value": "n8n-github-sync",
+          "value": "n8n-workflows",
           "mode": "list",
-          "cachedResultName": "n8n-github-sync",
-          "cachedResultUrl": "https://github.com/ssd-007/n8n-github-sync"
+          "cachedResultName": "n8n-workflows",
+          "cachedResultUrl": "https://github.com/ssd-007/n8n-workflows"
         },
         "filePath": "={{ $('Set Variables').item.json.filePath }}",
         "fileContent": "={{ $('Set Variables').item.json.fileContent }}",
@@ -168,7 +135,7 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        1344,
+        1120,
         -224
       ],
       "webhookId": "65c525be-810e-4d19-99c6-8c586385adf6",
@@ -192,10 +159,10 @@
         },
         "repository": {
           "__rl": true,
-          "value": "n8n-github-sync",
+          "value": "n8n-workflows",
           "mode": "list",
-          "cachedResultName": "n8n-github-sync",
-          "cachedResultUrl": "https://github.com/ssd-007/n8n-github-sync"
+          "cachedResultName": "n8n-workflows",
+          "cachedResultUrl": "https://github.com/ssd-007/n8n-workflows"
         },
         "filePath": "={{ $('Set Variables').item.json.filePath }}",
         "fileContent": "={{ $('Set Variables').item.json.fileContent }}",
@@ -206,7 +173,7 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        1344,
+        1120,
         -32
       ],
       "webhookId": "6731c82e-0bfa-4ce0-a228-f97ad1c1fe0d",
@@ -220,7 +187,7 @@
     },
     {
       "parameters": {
-        "url": "={{ 'https://api.github.com/repos/ssd-007/n8n-github-sync/contents/' + $json.filePath }}",
+        "url": "={{ 'https://api.github.com/repos/ssd-007/n8n-workflows/contents/' + $json.filePath }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "githubApi",
         "options": {}
@@ -230,7 +197,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        896,
+        672,
         -128
       ],
       "credentials": {
@@ -266,7 +233,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1568,
+        1344,
         -224
       ]
     },
@@ -295,7 +262,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1568,
+        1344,
         -32
       ]
     },
@@ -306,7 +273,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        1792,
+        1568,
         -128
       ]
     },
@@ -319,7 +286,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2016,
+        1792,
         -128
       ]
     },
@@ -336,7 +303,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2240,
+        2016,
         -128
       ],
       "webhookId": "2d8022c0-96ed-46bf-8468-611ab4ad02d6",
@@ -349,9 +316,9 @@
     },
     {
       "parameters": {
-        "content": "## 📥 Fetch & Prepare Workflows\nGet all active n8n workflows, filter out excluded ones, and prepare the name, repo path, and JSON content needed for backup.",
-        "height": 360,
-        "width": 644,
+        "content": "## 📥 Fetch & Prepare Workflows\nGet all active n8n workflows, and prepare the name, repo path, and JSON content needed for backup.",
+        "height": 328,
+        "width": 436,
         "color": "#814003"
       },
       "id": "s1000000-0000-0000-0000-000000000001",
@@ -360,13 +327,13 @@
       "typeVersion": 1,
       "position": [
         176,
-        -288
+        -272
       ]
     },
     {
       "parameters": {
         "content": "## 🔍 Check File Exists in GitHub\nFetch the file's current SHA from GitHub. If SHA is present the file exists and we update — otherwise we create it fresh.",
-        "height": 360,
+        "height": 328,
         "width": 436,
         "color": "#420354"
       },
@@ -375,8 +342,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        832,
-        -288
+        624,
+        -272
       ]
     },
     {
@@ -391,7 +358,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1280,
+        1072,
         -400
       ]
     },
@@ -407,7 +374,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1280,
+        1072,
         -64
       ]
     },
@@ -422,7 +389,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1712,
+        1504,
         -256
       ]
     },
@@ -430,12 +397,13 @@
       "parameters": {
         "content": "## ⏰ Triggers\n**Schedule:** Runs automatically every day at 4:00 AM to back up all active workflows.\n\n**Manual:** Run on demand whenever an immediate backup is needed.",
         "height": 576,
+        "width": 224,
         "color": "#078309"
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -80,
+        -64,
         -432
       ],
       "id": "0467b649-f3af-4510-ad90-9072eda38fb3",
@@ -474,17 +442,6 @@
       ]
     },
     "n8n Workflows": {
-      "main": [
-        [
-          {
-            "node": "Filter",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter": {
       "main": [
         [
           {
@@ -628,8 +585,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "c8a278c0-d340-4997-b244-9620e7974a74",
-  "activeVersionId": "c8a278c0-d340-4997-b244-9620e7974a74",
+  "versionId": "9a478826-6c61-47f9-833a-2019f0060aba",
+  "activeVersionId": "0a53d090-aa92-44da-ac1c-0c0315e34e9f",
   "triggerCount": 1,
   "shared": [
     {
@@ -641,44 +598,11 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-03-26T21:10:19.000Z",
-    "createdAt": "2026-03-26T21:10:03.223Z",
-    "versionId": "c8a278c0-d340-4997-b244-9620e7974a74",
+    "updatedAt": "2026-03-26T21:39:17.000Z",
+    "createdAt": "2026-03-26T21:38:54.023Z",
+    "versionId": "0a53d090-aa92-44da-ac1c-0c0315e34e9f",
     "workflowId": "bhWqdvOJPFtWzBiJ",
     "nodes": [
-      {
-        "parameters": {
-          "conditions": {
-            "options": {
-              "caseSensitive": true,
-              "leftValue": "",
-              "typeValidation": "strict",
-              "version": 3
-            },
-            "conditions": [
-              {
-                "id": "9ef571de-abb0-4f7e-b35b-b8ec8b17cfcf",
-                "leftValue": "={{ $json.name }}",
-                "rightValue": "Reconciliation",
-                "operator": {
-                  "type": "string",
-                  "operation": "notContains"
-                }
-              }
-            ],
-            "combinator": "and"
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.filter",
-        "typeVersion": 2.3,
-        "position": [
-          448,
-          -128
-        ],
-        "id": "fee00244-ecf1-49b2-8e04-bd346ddb444f",
-        "name": "Filter"
-      },
       {
         "parameters": {},
         "type": "n8n-nodes-base.manualTrigger",
@@ -741,7 +665,7 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          672,
+          448,
           -128
         ],
         "id": "fb8c4cdc-2f6e-4e1f-a4c6-51f8243add51",
@@ -775,7 +699,7 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
-          1120,
+          896,
           -128
         ],
         "id": "8f38c8b7-3769-4c8a-9e54-71842e29a2ff",
@@ -808,7 +732,7 @@
         "type": "n8n-nodes-base.github",
         "typeVersion": 1.1,
         "position": [
-          1344,
+          1120,
           -224
         ],
         "webhookId": "65c525be-810e-4d19-99c6-8c586385adf6",
@@ -846,7 +770,7 @@
         "type": "n8n-nodes-base.github",
         "typeVersion": 1.1,
         "position": [
-          1344,
+          1120,
           -32
         ],
         "webhookId": "6731c82e-0bfa-4ce0-a228-f97ad1c1fe0d",
@@ -870,7 +794,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          896,
+          672,
           -128
         ],
         "credentials": {
@@ -906,7 +830,7 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          1568,
+          1344,
           -224
         ]
       },
@@ -935,7 +859,7 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          1568,
+          1344,
           -32
         ]
       },
@@ -946,7 +870,7 @@
         "type": "n8n-nodes-base.merge",
         "typeVersion": 3,
         "position": [
-          1792,
+          1568,
           -128
         ]
       },
@@ -959,7 +883,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          2016,
+          1792,
           -128
         ]
       },
@@ -976,7 +900,7 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1.2,
         "position": [
-          2240,
+          2016,
           -128
         ],
         "webhookId": "2d8022c0-96ed-46bf-8468-611ab4ad02d6",
@@ -989,9 +913,9 @@
       },
       {
         "parameters": {
-          "content": "## 📥 Fetch & Prepare Workflows\nGet all active n8n workflows, filter out excluded ones, and prepare the name, repo path, and JSON content needed for backup.",
-          "height": 360,
-          "width": 644,
+          "content": "## 📥 Fetch & Prepare Workflows\nGet all active n8n workflows, and prepare the name, repo path, and JSON content needed for backup.",
+          "height": 328,
+          "width": 436,
           "color": "#814003"
         },
         "id": "s1000000-0000-0000-0000-000000000001",
@@ -1000,13 +924,13 @@
         "typeVersion": 1,
         "position": [
           176,
-          -288
+          -272
         ]
       },
       {
         "parameters": {
           "content": "## 🔍 Check File Exists in GitHub\nFetch the file's current SHA from GitHub. If SHA is present the file exists and we update — otherwise we create it fresh.",
-          "height": 360,
+          "height": 328,
           "width": 436,
           "color": "#420354"
         },
@@ -1015,8 +939,8 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          832,
-          -288
+          624,
+          -272
         ]
       },
       {
@@ -1031,7 +955,7 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          1280,
+          1072,
           -400
         ]
       },
@@ -1047,7 +971,7 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          1280,
+          1072,
           -64
         ]
       },
@@ -1062,7 +986,7 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          1712,
+          1504,
           -256
         ]
       },
@@ -1070,12 +994,13 @@
         "parameters": {
           "content": "## ⏰ Triggers\n**Schedule:** Runs automatically every day at 4:00 AM to back up all active workflows.\n\n**Manual:** Run on demand whenever an immediate backup is needed.",
           "height": 576,
+          "width": 224,
           "color": "#078309"
         },
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          -80,
+          -64,
           -432
         ],
         "id": "0467b649-f3af-4510-ad90-9072eda38fb3",
@@ -1114,17 +1039,6 @@
         ]
       },
       "n8n Workflows": {
-        "main": [
-          [
-            {
-              "node": "Filter",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Filter": {
         "main": [
           [
             {
@@ -1254,7 +1168,7 @@
       }
     },
     "authors": "Sidrit info@paracras.com",
-    "name": "Version 1",
+    "name": "Version 0a53d090",
     "description": "",
     "autosaved": true
   },
