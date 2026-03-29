@@ -2,13 +2,17 @@
 
 Automatically detects invoice emails in Gmail, extracts structured data using AI, organises the inbox, and logs everything to Google Sheets.
 
+<img width="1774" height="649" alt="image" src="https://github.com/user-attachments/assets/dc2ddc56-a2b2-4d6d-a132-3869ae92c4a4" />
+
 ---
 
 ## What It Does
 
+Two entry points: the Gmail trigger polls every minute in production; a manual trigger fetches up to 100 unread emails for bulk first-run processing.
+
 This workflow monitors a Gmail inbox for new unread emails. Each email is classified by Claude AI as an invoice (or not). Invoices are labelled, archived out of the inbox, and their data — vendor, amount, currency, date, invoice number — is extracted from the PDF attachment or email body and appended to a Google Sheets expense tracker. A daily Telegram summary is sent at 9am.
 
-Two entry points: the Gmail trigger polls every minute in production; a manual trigger fetches up to 100 unread emails for bulk first-run processing.
+<img width="413" height="353" alt="image" src="https://github.com/user-attachments/assets/92aae868-af9b-4390-9a2d-371d1d13438d" />
 
 ---
 
