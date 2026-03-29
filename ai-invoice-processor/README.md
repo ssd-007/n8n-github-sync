@@ -14,44 +14,43 @@ Two entry points: the Gmail trigger polls every minute in production; a manual t
 
 ## Flow
 
+```
 Manual Trigger → Get Many Messages (up to 100 unread) ──┐
-├──► AI Agent (Claude)
-Watch Gmail Inbox (every minute) ────────────────────────┘        ↓
-Is Invoice Email?
-/         
+                                                         ├──► AI Agent (Claude)
+Watch Gmail Inbox (every minute) ────────────────────────┘
+         ↓
+   Is Invoice Email?          ← YES or NO
+        /    \
+      YES     NO (stop)
+       ↓
+  Get Email with Attachment   ← re-fetch with PDF binary
+       ↓
+  Extract PDF Text            ← falls back to email body if no PDF
+       ↓
+  Label as Expenses           ← add Expenses label in Gmail
+       ↓
+  Remove from Inbox           ← remove INBOX label
+       ↓
+  Mark as Read
+       ↓
+  Prepare AI Input            ← combine PDF text + email metadata
+       ↓
+  AI: Extract Invoice Data    ← vendor, date, amount, currency, invoice #
+       ↓
+  Format Invoice Row          ← map fields to spreadsheet columns
+       ↓
+  Google Sheets               ← append row, deduplicate by Gmail Message ID
+```
 
-YES          NO
-↓          (stop)
-Get Email with Attachment
-↓
-Extract PDF Text
-↓
-Label as Expenses
-↓
-Remove from Inbox
-↓
-Mark as Read
-↓
-Prepare AI Input
-↓
-AI: Extract Invoice Data
-↓
-Format Invoice Row
-↓
-Google Sheets
-
+```
 Daily Summary Trigger (9am) + Manual Trigger
-↓
-Read Expense Tracker     ← get all rows from Google Sheet
-↓
-Build Daily Summary        ← filter yesterday + today, totals by currency
-↓
-Telegram              ← send summary to private chat
-
-
-
----
-
+         ↓
+  Read Expense Tracker        ← get all rows from Google Sheet
+         ↓
+  Build Daily Summary         ← filter yesterday + today, totals by currency
+         ↓
+  Telegram                    ← send summary to private chat
+```
 
 ---
 
